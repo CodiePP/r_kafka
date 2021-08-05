@@ -2,9 +2,10 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
+#include <librdkafka/rdkafka.h>
 
 // [[Rcpp::export]]
 std::string kafka_version() {
-  return "hello";
+  const char *kv = ::rd_kafka_version_str();
+  return std::string(kv);
 }
-
