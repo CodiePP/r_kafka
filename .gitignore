@@ -15,7 +15,7 @@
 /*.tar.gz
 
 # Output files from R CMD check
-/*.Rcheck/
+*.Rcheck/
 
 # RStudio files
 .Rproj.user/
@@ -37,3 +37,12 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+symbols.rds
+RcppExports.R
+RcppExports.cpp
+*.o
+*.so
+*.dll
+
+.vscode
