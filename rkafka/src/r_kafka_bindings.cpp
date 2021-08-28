@@ -23,7 +23,7 @@ uint64_t kafka_conf_new() {
 bool kafka_conf_set(uint64_t p, std::string const &k, std::string const &v) {
     rd_kafka_conf_t *kc = (rd_kafka_conf_t*)p;
     char errstr[128];
-    rd_kafka_conf_res_t res = rd_kafka_conf_set(kc, k.c_str(), k.c_str(), errstr, 127);
+    rd_kafka_conf_res_t res = rd_kafka_conf_set(kc, k.c_str(), v.c_str(), errstr, 127);
     if (res != RD_KAFKA_CONF_OK) {
         std::clog << "ERROR: kafka_conf_set returned: " << errstr << std::endl;
         return false;
@@ -203,21 +203,47 @@ bool kafka_flush(uint64_t p_client, int32_t timeout) {
 }
 
 // [[Rcpp::export]]
+bool kafka_subscribe(uint64_t p_client, DataFrame topics) {
+    rd_kafka_t *k = (rd_kafka_t*)p_client;
+    StringVector ts;
+    if (topics.containsElementNamed("topic"))
+        ts = topics["topic"];
+    rd_kafka_topic_partition_list_t *ktl = rd_kafka_topic_partition_list_new(ts.size());
+    for (int i = 0; i < ts.size(); i++) {
+        rd_kafka_topic_partition_list_add(ktl, ts[i], -1);
+    }
+    rd_kafka_resp_err_t res = rd_kafka_subscribe(k, ktl);
+    rd_kafka_topic_partition_list_destroy(ktl);
+    return (res == RD_KAFKA_RESP_ERR_NO_ERROR);
+}
+
+// [[Rcpp::export]]
+bool kafka_unsubscribe(uint64_t p_client) {
+    rd_kafka_t *k = (rd_kafka_t*)p_client;
+    rd_kafka_resp_err_t res = rd_kafka_unsubscribe(k);
+    return (res == RD_KAFKA_RESP_ERR_NO_ERROR);
+}
+
+// [[Rcpp::export]]
 List kafka_consumer_poll(uint64_t p_client, int32_t timeout) {
     rd_kafka_t *k = (rd_kafka_t*)p_client;
 
     rd_kafka_message_t *msg = rd_kafka_consumer_poll(k, timeout);
 
     StringVector value;
-    value.push_back(std::string((const char*)msg->payload, msg->len));
+    if (msg && msg->payload && msg->len > 0) {
+      value.push_back(std::string((const char*)msg->payload, msg->len));
+    }
     NumericVector offset;
-    offset.push_back(msg->offset);
     NumericVector partition;
-    partition.push_back(msg->partition);
+    if (msg) {
+      offset.push_back(msg->offset);
+      partition.push_back(msg->partition);
+    }
     List res = List::create(Named("value") = value,
                             Named("offset") = offset,
                             Named("partition") = partition);
-    if (msg->key && msg->key_len > 0) {
+    if (msg && msg->key && msg->key_len > 0) {
         StringVector key;
         key.push_back(std::string((const char*)msg->key, msg->key_len));
         res["key"] = key;
