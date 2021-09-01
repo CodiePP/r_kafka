@@ -1,11 +1,11 @@
-# r_kafka
+# rkafka
 Interfacing R and Apache Kafka
 
 
 ## build
 
 ```sh
-R CMD build rkafka
+R CMD build .
 ```
 
 this results in a .tar.gz which can then be installed:
@@ -24,9 +24,7 @@ rkafka::kafka_version()
 ## development
 
 ```sh
-cd rkafka
 Rscript prepare.R
-cd ..
-R CMD check rkafka
+R CMD check .
 ```
 
