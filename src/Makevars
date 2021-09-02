@@ -3,3 +3,7 @@ PKG_LIBS += $(shell pkg-config --libs rdkafka)
 
 PKG_CPPFLAGS += -I/usr/local/include/
 
+CC=clang
+CXX=clang++
+
+CXX_STD = CXX11

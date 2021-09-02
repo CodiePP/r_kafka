@@ -1,3 +1,6 @@
+// R interface to Apache Kafka
+//
+// bindings to library rdkafka
 
 #include <Rcpp.h>
 using namespace Rcpp;
@@ -7,18 +10,21 @@ using namespace Rcpp;
 
 #include <librdkafka/rdkafka.h>
 
+//' @export
 // [[Rcpp::export]]
 std::string kafka_version() {
   const char *kv = ::rd_kafka_version_str();
   return std::string(kv);
 }
 
+//' @export
 // [[Rcpp::export]]
 uint64_t kafka_conf_new() {
     rd_kafka_conf_t *kc = rd_kafka_conf_new();
     return (uint64_t)kc;
 }
 
+//' @export
 // [[Rcpp::export]]
 bool kafka_conf_set(uint64_t p, std::string const &k, std::string const &v) {
     rd_kafka_conf_t *kc = (rd_kafka_conf_t*)p;
@@ -31,18 +37,21 @@ bool kafka_conf_set(uint64_t p, std::string const &k, std::string const &v) {
     return true;
 }
 
+//' @export
 // [[Rcpp::export]]
 void kafka_conf_destroy(uint64_t p) {
     rd_kafka_conf_t *kc = (rd_kafka_conf_t*)p;
     rd_kafka_conf_destroy(kc);
 }
 
+//' @export
 // [[Rcpp::export]]
 uint64_t kafka_topic_conf_new() {
     rd_kafka_topic_conf_t *kc = rd_kafka_topic_conf_new();
     return (uint64_t)kc;
 }
 
+//' @export
 // [[Rcpp::export]]
 bool kafka_topic_conf_set(uint64_t p, std::string const &k, std::string const &v) {
     rd_kafka_topic_conf_t *kc = (rd_kafka_topic_conf_t*)p;
@@ -55,6 +64,7 @@ bool kafka_topic_conf_set(uint64_t p, std::string const &k, std::string const &v
     return true;
 }
 
+//' @export
 // [[Rcpp::export]]
 void kafka_topic_conf_destroy(uint64_t p) {
     rd_kafka_topic_conf_t *kc = (rd_kafka_topic_conf_t*)p;
@@ -72,22 +82,26 @@ uint64_t kafka_new(std::string const &name, int ty, uint64_t p_conf) {
     return (uint64_t)k;
 }
 
+//' @export
 // [[Rcpp::export]]
 uint64_t kafka_consumer_new(uint64_t p_conf) {
     return kafka_new("consumer", RD_KAFKA_CONSUMER, p_conf);
 }
 
+//' @export
 // [[Rcpp::export]]
 uint64_t kafka_producer_new(uint64_t p_conf) {
     return kafka_new("producer", RD_KAFKA_PRODUCER, p_conf);
 }
 
+//' @export
 // [[Rcpp::export]]
 void kafka_destroy(uint64_t p) {
     rd_kafka_t *k = (rd_kafka_t*)p;
     rd_kafka_destroy(k);
 }
 
+//' @export
 // [[Rcpp::export]]
 uint64_t kafka_topic_new(uint64_t p_client, std::string const &name, uint64_t p_conf) {
     rd_kafka_t *k = (rd_kafka_t*)p_client;
@@ -96,12 +110,14 @@ uint64_t kafka_topic_new(uint64_t p_client, std::string const &name, uint64_t p_
     return (uint64_t)t;
 }
 
+//' @export
 // [[Rcpp::export]]
 void kafka_topic_destroy(uint64_t p) {
     rd_kafka_topic_t *t = (rd_kafka_topic_t*)p;
     rd_kafka_topic_destroy(t);
 }
 
+//' @export
 // [[Rcpp::export]]
 bool kafka_produce(uint64_t p_topic, int partition, std::string const &payload, std::string const &key) {
     rd_kafka_topic_t *t = (rd_kafka_topic_t*)p_topic;
@@ -118,6 +134,7 @@ bool kafka_produce(uint64_t p_topic, int partition, std::string const &payload, 
     return (res == 0);
 }
 
+//' @export
 // [[Rcpp::export]]
 bool kafka_produce_batch(uint64_t p_topic, int partition, DataFrame batch) {
     rd_kafka_topic_t *t = (rd_kafka_topic_t*)p_topic;
@@ -153,6 +170,7 @@ bool kafka_produce_batch(uint64_t p_topic, int partition, DataFrame batch) {
     return (res == 0);
 }
 
+//' @export
 // [[Rcpp::export]]
 StringVector kafka_consume_batch(uint64_t p_topic, int partition, int32_t timeout) {
     rd_kafka_topic_t *t = (rd_kafka_topic_t*)p_topic;
@@ -174,6 +192,7 @@ StringVector kafka_consume_batch(uint64_t p_topic, int partition, int32_t timeou
     return vs;
 }
 
+//' @export
 // [[Rcpp::export]]
 bool kafka_consume_start(uint64_t p_topic, int partition, int64_t offset) {
     rd_kafka_topic_t *t = (rd_kafka_topic_t*)p_topic;
@@ -184,6 +203,7 @@ bool kafka_consume_start(uint64_t p_topic, int partition, int64_t offset) {
     return (res == 0);
 }
 
+//' @export
 // [[Rcpp::export]]
 bool kafka_consume_stop(uint64_t p_topic, int partition) {
     rd_kafka_topic_t *t = (rd_kafka_topic_t*)p_topic;
@@ -194,6 +214,7 @@ bool kafka_consume_stop(uint64_t p_topic, int partition) {
     return (res == 0);
 }
 
+//' @export
 // [[Rcpp::export]]
 bool kafka_flush(uint64_t p_client, int32_t timeout) {
     rd_kafka_t *k = (rd_kafka_t*)p_client;
@@ -202,6 +223,7 @@ bool kafka_flush(uint64_t p_client, int32_t timeout) {
     return (res == RD_KAFKA_RESP_ERR_NO_ERROR);
 }
 
+//' @export
 // [[Rcpp::export]]
 bool kafka_subscribe(uint64_t p_client, DataFrame topics) {
     rd_kafka_t *k = (rd_kafka_t*)p_client;
@@ -217,6 +239,7 @@ bool kafka_subscribe(uint64_t p_client, DataFrame topics) {
     return (res == RD_KAFKA_RESP_ERR_NO_ERROR);
 }
 
+//' @export
 // [[Rcpp::export]]
 bool kafka_unsubscribe(uint64_t p_client) {
     rd_kafka_t *k = (rd_kafka_t*)p_client;
@@ -224,6 +247,7 @@ bool kafka_unsubscribe(uint64_t p_client) {
     return (res == RD_KAFKA_RESP_ERR_NO_ERROR);
 }
 
+//' @export
 // [[Rcpp::export]]
 List kafka_consumer_poll(uint64_t p_client, int32_t timeout) {
     rd_kafka_t *k = (rd_kafka_t*)p_client;
@@ -251,6 +275,7 @@ List kafka_consumer_poll(uint64_t p_client, int32_t timeout) {
     return res;
 }
 
+//' @export
 // [[Rcpp::export]]
 bool kafka_consumer_close(uint64_t p_client) {
     rd_kafka_t *k = (rd_kafka_t*)p_client;
