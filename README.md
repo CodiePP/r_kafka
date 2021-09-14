@@ -1,6 +1,7 @@
 # rkafka
 Interfacing R and Apache Kafka
 
+[![compile-R-package](https://github.com/CodiePP/r_kafka/actions/workflows/check-standard.yaml/badge.svg?branch=main)](https://github.com/CodiePP/r_kafka/actions/workflows/check-standard.yaml)
 
 ## build
 
