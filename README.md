@@ -1,6 +1,7 @@
 # rkafka
 Interfacing R and Apache Kafka
 
+[![compile-R-package](https://github.com/CodiePP/r_kafka/actions/workflows/check-standard.yaml/badge.svg?branch=main)](https://github.com/CodiePP/r_kafka/actions/workflows/check-standard.yaml)
 
 ## build
 
@@ -11,7 +12,7 @@ R CMD build .
 this results in a .tar.gz which can then be installed:
 
 ```sh
-R CMD install rkafka_1.0.tar.gz
+R CMD INSTALL rkafka_1.0.tar.gz
 ```
 
 ## testing

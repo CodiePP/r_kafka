@@ -6,10 +6,10 @@ on:
   pull_request:
     branches: [main, master]
 
-name: R-CMD-check
+name: compile-R-package
 
 jobs:
-  R-CMD-check:
+  compile-R-package:
     runs-on: ${{ matrix.config.os }}
 
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
@@ -20,9 +20,9 @@ jobs:
         config:
           - {os: macOS-latest,   r: 'release'}
             #- {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+            #- {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel/1'}
+            #- {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -39,27 +39,30 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install macOS system dependencies
+      - name: Install macOS system dependencies (brew)
         if: runner.os == 'macOS'
         run: |
           brew install librdkafka
 
-      - name: Install Linux system dependencies
-        if: runner.os == 'ubuntu'
+      - name: Install Linux system dependencies (apt)
+        if: runner.os == 'Linux'
         run: |
-          apt install librdkafka-dev
+          sudo apt install librdkafka-dev
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
-        with:
-          extra-packages: rcmdcheck
+      - name: Install R dependencies
+        run: Rscript -e 'install.packages(c("Rcpp","roxygen2","devtools"))'
+
+      - name: Prepare
+        run: Rscript prepare.R
+
+      - name: Build
+        run: Rscript -e 'devtools::build()'
+
+      - name: Install
+        run: Rscript -e 'devtools::install()'
 
       - name: Check
-        env:
-          _R_CHECK_CRAN_INCOMING_: false
-        run: |
-          options(crayon.enabled = TRUE)
-          rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
-        shell: Rscript {0}
+        run: Rscript -e 'devtools::check(cran=F,error_on=c("error"))'
 
       - name: Show testthat output
         if: always()
