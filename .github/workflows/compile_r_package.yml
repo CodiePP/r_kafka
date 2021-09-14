@@ -47,7 +47,7 @@ jobs:
       - name: Install Linux system dependencies
         if: runner.os == 'Linux'
         run: |
-          apt install librdkafka-dev
+          sudo apt install librdkafka-dev
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
