@@ -11,4 +11,4 @@ OS_type: unix
 NeedsCompilation: yes
 Imports: Rcpp (>= 1.0.7)
 LinkingTo: Rcpp
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2

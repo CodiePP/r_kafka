@@ -20,9 +20,9 @@ jobs:
         config:
           - {os: macOS-latest,   r: 'release'}
             #- {os: windows-latest, r: 'release'}
-          - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
+            #- {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
-          - {os: ubuntu-latest,   r: 'oldrel/1'}
+            #- {os: ubuntu-latest,   r: 'oldrel/1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -45,13 +45,17 @@ jobs:
           brew install librdkafka
 
       - name: Install Linux system dependencies
-        if: runner.os == 'ubuntu'
+        if: runner.os == 'Linux'
         run: |
           apt install librdkafka-dev
 
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
+
+      - name: Prepare
+        run: |
+          Rscript prepare.R
 
       - name: Check
         env:
