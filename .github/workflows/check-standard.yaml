@@ -39,21 +39,30 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - name: Install macOS system dependencies
+      - name: Install macOS system dependencies (brew)
         if: runner.os == 'macOS'
         run: |
           brew install librdkafka
 
-      - name: Install Linux system dependencies
-        if: runner.os == 'ubuntu'
+      - name: Install Linux system dependencies (apt)
+        if: runner.os == 'Linux'
         run: |
           sudo apt install librdkafka-dev
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
-        with:
-          extra-packages: rcmdcheck
+      - name: Install R dependencies
+        run: Rscript -e 'install.packages(c("Rcpp","roxygen2","devtools"))'
 
-      - uses: r-lib/actions/check-r-package@v1
+      - name: Prepare
+        run: Rscript prepare.R
+
+      - name: Build
+        run: Rscript -e 'devtools::build()'
+
+      - name: Install
+        run: Rscript -e 'devtools::install()'
+
+      - name: Check
+        run: Rscript -e 'devtools::check(cran=F,error_on=c("error"))'
 
       - name: Show testthat output
         if: always()
