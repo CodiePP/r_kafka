@@ -11,7 +11,7 @@ R CMD build .
 this results in a .tar.gz which can then be installed:
 
 ```sh
-R CMD install rkafka_1.0.tar.gz
+R CMD INSTALL rkafka_1.0.tar.gz
 ```
 
 ## testing
