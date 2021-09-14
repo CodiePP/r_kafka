@@ -39,6 +39,10 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Prepare
+        run: |
+          Rscript prepare.R
+
       - name: Install macOS system dependencies
         if: runner.os == 'macOS'
         run: |
@@ -52,10 +56,6 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: rcmdcheck
-
-      - name: Prepare
-        run: |
-          Rscript prepare.R
 
       - name: Check
         env:
