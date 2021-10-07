@@ -39,8 +39,6 @@ vignettes/*.pdf
 .Renviron
 
 symbols.rds
-RcppExports.R
-RcppExports.cpp
 *.o
 *.so
 *.dll
