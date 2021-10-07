@@ -150,7 +150,7 @@ bool kafka_produce_batch(uint64_t p_topic, int partition, DataFrame batch) {
     } else {
         return false;
     }
-    rd_kafka_message_t msgs[vs.size()];
+    rd_kafka_message_t *msgs = (rd_kafka_message_t*)malloc(sizeof(rd_kafka_message_t) * vs.size());
     int idx = 0;
     for (auto const &v : vs) {
         char *p = NULL; int pn = 0;
@@ -177,7 +177,7 @@ StringVector kafka_consume_batch(uint64_t p_topic, int partition, int32_t timeou
     // a negative partition indicates "unassigned" partition
     if (partition < 0) { partition = RD_KAFKA_PARTITION_UA; }
     int sz = 100;
-    rd_kafka_message_t* msgs[sz];
+    rd_kafka_message_t **msgs = (rd_kafka_message_t**)malloc(sizeof(rd_kafka_message_t*) * sz);
 
     int res = rd_kafka_consume_batch(t, partition, timeout,
                                    msgs, sz);

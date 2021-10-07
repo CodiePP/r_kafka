@@ -6,6 +6,7 @@ Interfacing R and Apache Kafka
 ## build
 
 ```sh
+Rscript prepare.R
 R CMD build .
 ```
 
