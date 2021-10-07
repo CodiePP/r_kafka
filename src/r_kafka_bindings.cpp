@@ -167,6 +167,7 @@ bool kafka_produce_batch(uint64_t p_topic, int partition, DataFrame batch) {
                   // TODO is this the right way?
                   RD_KAFKA_MSG_F_COPY | RD_KAFKA_MSG_F_BLOCK,
                   msgs, idx);
+    free(msgs);
     return (res == 0);
 }
 
@@ -189,6 +190,7 @@ StringVector kafka_consume_batch(uint64_t p_topic, int partition, int32_t timeou
     for (int idx = 0; idx < res; idx++) {
         vs.push_back(std::string((char*)msgs[idx]->payload, msgs[idx]->len));
     }
+    free(msgs);
     return vs;
 }
 
