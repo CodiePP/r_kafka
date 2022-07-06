@@ -9,6 +9,6 @@ Description: Read from and write to Kafka topics
 License: GPL-3
 OS_type: unix
 NeedsCompilation: yes
-Imports: Rcpp (>= 1.0.7)
+Imports: Rcpp (>= 1.0.6)
 LinkingTo: Rcpp
 RoxygenNote: 7.1.2
